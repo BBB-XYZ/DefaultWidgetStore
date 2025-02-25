@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browser Benchmark</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        background: #121212;
+        color: #fff;
+      }
+
+      .circle {
+        flex: 1 1 40%;
+        min-width: 100px;
+        max-width: 200px;
+        height: 100px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1em;
+        font-weight: bold;
+        color: #fff;
+        text-align: center;
+        margin: 10px;
+        flex-direction: column;
+      }
+
+      .speed {
+        background: radial-gradient(circle, #4caf50 50%, #1d1d1d 100%);
+      }
+      .fps {
+        background: radial-gradient(circle, #ff9800 50%, #1d1d1d 100%);
+      }
+      .cpu {
+        background: radial-gradient(circle, #2196f3 50%, #1d1d1d 100%);
+      }
+      .security {
+        background: radial-gradient(circle, #f44336 50%, #1d1d1d 100%);
+        position: relative;
+      }
+
+      .details {
+        font-size: 0.7em;
+        margin-top: 5px;
+      }
+
+      #statusBar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 4px;
+        background-color: #fff;
+        transition: width 1s ease-in-out;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="circle speed" id="speedGauge">
+      0 Mbps
+      <div class="details" id="latency">Latency: --</div>
+    </div>
+    <div class="circle fps" id="fpsGauge">0 FPS</div>
+    <div class="circle cpu" id="cpuGauge">0 Cores</div>
+    <div class="circle security" id="securityStatus">
+      Checking...
+      <div id="statusBar"></div>
+    </div>
+
+    <script>
+      let speedTestRunning = false;
+      function measureSpeed() {
+        if (speedTestRunning) return;
+        speedTestRunning = true;
+        let startTime = performance.now();
+        fetch(`https://ash-speed.hetzner.com/100MB.bin?no_cache=${startTime}`, {
+          mode: "no-cors",
+        })
+          .then(() => {
+            let duration = (performance.now() - startTime) / 1000;
+            let speed = (100 / duration).toFixed(2);
+            document.getElementById("speedGauge").firstChild.textContent =
+              speed + " Mbps";
+          })
+          .catch(
+            () =>
+              (document.getElementById("speedGauge").firstChild.textContent =
+                "Error")
+          );
+        startTime = performance.now();
+        fetch(window.location.href, { mode: "no-cors" })
+          .then(() => {
+            let duration = performance.now() - startTime;
+            let latency = duration.toFixed(2) + " ms";
+            document.getElementById("latency").textContent =
+              "Latency: " + latency;
+          })
+          .catch(
+            () =>
+              (document.getElementById("latency").textContent =
+                "Latency: Error")
+          )
+          .finally(() => (speedTestRunning = false));
+      }
+
+      function measureFPS() {
+        let frames = 0;
+        let start = performance.now();
+        function loop() {
+          frames++;
+          if (performance.now() - start > 1000) {
+            document.getElementById("fpsGauge").innerText = frames + " FPS";
+            frames = 0;
+            start = performance.now();
+          }
+          requestAnimationFrame(loop);
+        }
+        loop();
+      }
+
+      function measureCPU() {
+        let cores = navigator.hardwareConcurrency || 1;
+        document.getElementById("cpuGauge").innerText = cores + " Cores";
+      }
+
+      async function measureSecurity() {
+        const securityText = document.getElementById("securityStatus");
+        const statusBar = document.getElementById("statusBar");
+        let issues = [];
+        let issueIndex = 0;
+
+        if (navigator.doNotTrack !== "1") issues.push("❌ Do Not Track Off");
+        if (document.cookie && !document.cookie.includes("Secure"))
+          issues.push("❌ Secure Cookies Not Enabled");
+        if (window.location.protocol !== "https:")
+          issues.push("❌ Site is not using HTTPS");
+        if (document.cookie && !document.cookie.includes("SameSite"))
+          issues.push("❌ SameSite Cookies Not Enabled");
+
+        await checkWebRtcLeak(issues);
+
+        function showNextIssue() {
+          if (issues.length === 0) {
+            securityText.innerText = "✅ Secure";
+            securityText.style.background =
+              "radial-gradient(circle, #4caf50 50%, #1d1d1d 100%)";
+            statusBar.style.width = "100%";
+            return;
+          }
+          const percentage = (issues.length / 5) * 100;
+          securityText.style.background = `linear-gradient(0deg, red ${percentage}%, green ${percentage + 5}%) , radial-gradient(circle, #ffff 50%, #1d1d1d 100%)`;
+securityText.style.backgroundBlendMode = 'multiply';
+
+
+          securityText.innerHTML = issues[issueIndex];
+
+          issueIndex = (issueIndex + 1) % issues.length;
+
+          setTimeout(showNextIssue, 3000);
+        }
+        showNextIssue();
+      }
+
+      async function checkWebRtcLeak(issues) {
+        const rtc = new RTCPeerConnection({ iceServers: [] });
+
+        rtc.createDataChannel("");
+
+        return new Promise((resolve) => {
+          rtc.onicecandidate = function (event) {
+            if (event.candidate) {
+              const ip = event.candidate.candidate.split(" ")[4];
+
+              const localIps = [
+                /^10\./, // 10.0.0.0 - 10.255.255.255
+                /^172\.(1[6-9]|2[0-9]|3[01])\./, // 172.16.0.0 - 172.31.255.255
+                /^192\.168\./, // 192.168.0.0 - 192.168.255.255
+                /^127\./, // 127.0.0.0 - 127.255.255.255
+              ];
+
+              if (localIps.some((regex) => regex.test(ip))) {
+                issues.push("❌ WebRTC Leak: Local IP exposed");
+              }
+            } else {
+              resolve();
+            }
+          };
+
+          rtc
+            .createOffer()
+            .then((offer) => rtc.setLocalDescription(offer))
+            .catch((e) => console.log("Error creating offer:", e));
+        });
+      }
+
+      setInterval(measureSpeed, 5000);
+      measureCPU();
+      measureSecurity();
+      measureFPS();
+    </script>
+  </body>
+</html>
