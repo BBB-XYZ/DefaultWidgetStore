@@ -21,8 +21,8 @@
       "widgetUrl": "https://htmlpreview.github.io/?https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/BrowserCheck-Widget/BrowserCheck.html",
       "imageUrl": "https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/BrowserCheck-Widget/BrowserCheck.png",
       "description": "Browser-Check Widget.",
-      "defaultHeight": 1,
-      "defaultWidth": 1
+      "defaultHeight": 2,
+      "defaultWidth": 8
     },
   ]
 }
