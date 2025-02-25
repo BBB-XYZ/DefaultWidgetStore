@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  chart-app:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - API_URL=http://localhost:5053/api/Event/GetAllEventCounts
