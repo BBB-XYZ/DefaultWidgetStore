@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather Baden</title>
+</head>
+<script>
+    const apiKey = '2f9a5ad1fc01d2b000fbf73200753bf4';
+    const lat = 47.48062;
+    const lon = 8.30088;
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`;
+
+    const weather = fetch(weatherUrl, {
+        method: 'GET'
+    }).then(response => response.json())
+        .then(data => {
+            document.getElementById('location').innerText = data.name;
+            document.getElementById('weather').innerText = data.weather[0].main;
+            document.getElementById('temperature').innerText = Math.round(data.main.temp) + '°C';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        font-size: 24px;
+    }
+
+    .widget {
+        width: 100vw;
+        height: 100vh;
+        background-color: #3bc9c7;
+
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+
+        color: white
+    }
+</style>
+<body>
+<div class="widget">
+    <img src="cloud.svg" alt="cloud" width="25%" height="25%">
+    <div>
+        <p id="location">Loading...</p>
+        <p id="weather">Loading...</p>
+        <p id="temperature">Loading...</p>
+    </div>
+</div>
+</body>
+</html>

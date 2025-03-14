@@ -2,11 +2,11 @@
   "widgets": [
     {
       "widgetId": "widget1",
-      "widgetUrl": "https://htmlpreview.github.io/?https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Widget1.html",
-      "imageUrl": "https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Widget1.png",
+      "widgetUrl": "https://htmlpreview.github.io/?https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Weather-Widget/weather.html",
+      "imageUrl": "https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Weather-Widget/logo.png",
       "description": "This is the first widget.",
-      "defaultHeight": 1,
-      "defaultWidth": 1
+      "defaultHeight": 2,
+      "defaultWidth": 3
     },
     {
       "widgetId": "widget2",
