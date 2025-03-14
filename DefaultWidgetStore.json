@@ -10,11 +10,11 @@
     },
     {
       "widgetId": "widget2",
-      "widgetUrl": "https://htmlpreview.github.io/?https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/",
-      "imageUrl": "https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Widget1.png",
-      "description": "",
-      "defaultHeight": 1,
-      "defaultWidth": 1
+      "widgetUrl": "https://bbb-xyz-widget.v3.heku.ch/",
+      "imageUrl": "https://github.com/BBB-XYZ/DefaultWidgetStore/blob/main/icon.png?raw=true",
+      "description": "A beautifull widget which shows wondefull stats",
+      "defaultHeight": 3,
+      "defaultWidth": 3
     },
     {
       "widgetId": "widget3",
