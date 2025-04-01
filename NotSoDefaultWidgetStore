@@ -1,0 +1,12 @@
+{
+  "widgets": [
+    {
+      "widgetId": "verySeriousWidget",
+      "widgetUrl": "https://htmlpreview.github.io/?https://gist.githubusercontent.com/Mcbeany/6b591bc1e8c17c522088c6d85ff87f52/raw/927ec4c07f0cac4816f02d789fac3161c10bd084/rick.html",
+      "imageUrl": "https://raw.githubusercontent.com/BBB-XYZ/DefaultWidgetStore/main/Weather-Widget/logo.png",
+      "description": "This is the first widget.",
+      "defaultHeight": 2,
+      "defaultWidth": 3
+    }
+  ]
+}
